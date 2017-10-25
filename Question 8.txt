@@ -1,0 +1,16 @@
+fil = filter h1b by full_time_position == 'Y';
+tme_Y = group fil by (job_title,year);
+sum_Y = foreach tme_Y generate group,AVG(fil.prevailing_wage) as AVG_Y;
+odr_Y = order sum_Y by $1 desc;
+
+fil = filter h1b by full_time_position == 'N';
+tme_N = group fil by (job_title,year);
+sum_N = foreach tme_N generate group,AVG(fil.prevailing_wage) as AVG_N;
+odr_N = order sum_N by $1 desc;
+
+join1 = join sum_Y by $0,sum_N by $0;
+for = foreach join1 generate $0,$1,$3;
+odr = order for by $1 desc;
+
+lim = limit odr 4;
+dump lim;

@@ -1,0 +1,6 @@
+dis =foreach h1b generate job_title,year;
+grp2013 = group dis by (job_title,year);
+cunt2013 = foreach grp2013 generate $0.year,$0.job_title,COUNT(dis.$0) as Tapplications;
+ys = group cunt2013 by $0;
+top10 = foreach ys { sorted = order cunt2013 by Tapplications desc ; top = limit sorted 5 ; generate flatten(top); }; 
+dump top10;
